@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
 
-import HomeScreen from './src/screens/HomeScreen';
+import MarketsScreen from './src/screens/MarketsScreen';
 
 import { ApolloProvider } from '@apollo/client';
 
@@ -16,7 +16,14 @@ export default function App() {
     <ApolloProvider client={client}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Markets" component={MarketsScreen} options={{
+            animationEnabled: true,
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#212121',
+            },
+            headerTintColor: '#b3b3b3'
+          }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

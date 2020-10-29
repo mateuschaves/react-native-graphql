@@ -2,9 +2,7 @@ import React, {useState, useEffect} from 'react'
 
 import {
     ToastAndroid,
-    ActivityIndicator,
-    View,
-    Text,
+    StatusBar
 } from 'react-native';
 
 import {
@@ -13,8 +11,10 @@ import {
     IMarketSubscription
 } from '../../@types/Market';
 
+import Market from './Market';
 
-import {Container} from './styles';
+
+import {Container, Content, Loading} from './styles';
 
 import {ApolloError, gql, useQuery, useSubscription} from '@apollo/client';
 
@@ -40,8 +40,7 @@ const watchMarketAdded = gql`
 `;
 
 
-
-export default function HomeScreen() {
+export default function MarketsScreen() {
 
     const [markets, setMarkets] = useState<IMarket[]>([]);
     const marketAddedSubscription = useSubscription<IMarketSubscription>(watchMarketAdded);
@@ -69,16 +68,30 @@ export default function HomeScreen() {
     }
 
     function renderMarkets(markets?: IMarket[]) {
-        return markets?.filter(market => market.name).map(market => (
-            <View key={market.id}>
-                <Text>{market.name}</Text>
-            </View>
+        return markets?.filter(market => market.name).map((market, index) => (
+            <Market
+                key={market.id}
+                name={market.name}
+                id={market.id}
+                delay={index * 10}
+            />
         ))
+    }
+
+    function renderLoading() {
+        return (
+            <Content> 
+                <Loading color="#b3b3b3" size={40} /> 
+            </Content>
+        )
     }
 
     return (
         <Container>
-            {loading ? <ActivityIndicator /> : renderMarkets(markets)}
+            <StatusBar 
+                barStyle="default"
+            />
+            {loading ? renderLoading() : renderMarkets(markets)}
         </Container>
     )
 }
