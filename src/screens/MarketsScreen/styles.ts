@@ -4,7 +4,7 @@ import {ActivityIndicator, Dimensions} from 'react-native';
 
 const {height} = Dimensions.get('window');
 
-export const Container = styled.ScrollView`
+export const Container = styled.View`
   flex: 1;
   background-color: #121212;
 `;

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 
 import {
-    ToastAndroid,
-    StatusBar
+    StatusBar,
+    FlatList
 } from 'react-native';
 
 import {
@@ -13,31 +13,14 @@ import {
 
 import Market from './Market';
 
+import { 
+    listMarketsQuery,
+    watchMarketAdded
+} from './graphql';
 
 import {Container, Content, Loading} from './styles';
 
-import {ApolloError, gql, useQuery, useSubscription} from '@apollo/client';
-
-const listMarketsQuery = gql`
-        query ListMarket ($page: Int!, $limit: Int!) {
-            listMarket (page: $page, limit: $limit) {
-                count,
-                rows {
-                    id,
-                    name
-                }
-            }
-        }
-`;
-
-const watchMarketAdded = gql`
-  subscription MarketAdded {
-    marketAdded {
-      id
-      name
-    }
-  }
-`;
+import {useSubscription, useQuery} from '@apollo/client';
 
 
 export default function MarketsScreen() {
@@ -45,13 +28,12 @@ export default function MarketsScreen() {
     const [markets, setMarkets] = useState<IMarket[]>([]);
     const marketAddedSubscription = useSubscription<IMarketSubscription>(watchMarketAdded);
 
-    const { loading } = useQuery<IMarketPaginatedQuery>(listMarketsQuery, {
+    const {loading} = useQuery<IMarketPaginatedQuery>(listMarketsQuery, {
+        onCompleted: onCompleted,
         variables: {
-            limit: 10,
-            page: 1
-        },
-        onError: onError,
-        onCompleted: onCompleted
+            page: 1,
+            limit: 5
+        }
     });
 
     useEffect(() => {
@@ -59,23 +41,21 @@ export default function MarketsScreen() {
         setMarkets([...markets, {id, name}]);
     }, [marketAddedSubscription.data]);
 
-    function onError(error: ApolloError) {
-        ToastAndroid.show(error.message, ToastAndroid.BOTTOM);
-    }
-
     function onCompleted(data: IMarketPaginatedQuery) {
-        setMarkets(data.listMarket.rows);
+        setMarkets([...markets, ...data.listMarket.rows]);
     }
 
     function renderMarkets(markets?: IMarket[]) {
-        return markets?.filter(market => market.name).map((market, index) => (
-            <Market
-                key={market.id}
-                name={market.name}
-                id={market.id}
-                delay={index * 10}
-            />
-        ))
+        return <FlatList
+                    data={markets?.filter(market => market.name)}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item, index }) =>  
+                        <Market
+                            name={item.name}
+                            id={item.id}
+                            duration={(index + 1) * 20}
+                        />}
+                />
     }
 
     function renderLoading() {

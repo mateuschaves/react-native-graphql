@@ -3,16 +3,16 @@ import React from 'react'
 interface IMarketProps {
     id: number;
     name: string;
-    delay: number;
+    duration: number;
 }
 
 import {Container, Title} from './styles';
 
-export default function Market({id, name, delay}: IMarketProps) {
+export default function Market({id, name, duration}: IMarketProps) {
     return (
         <Container
             animation="slideInLeft"
-            delay={delay}
+            duration={duration}
         >
             <Title>{`#${id} - ${name}`}</Title>
         </Container>

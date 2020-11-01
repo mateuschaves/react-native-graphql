@@ -4,7 +4,6 @@ import * as Animatable from 'react-native-animatable';
 
 
 export const Container = styled(Animatable.View)`
-    width: 95%;
     height: 80px;
     justify-content: center;
     align-items: center;
@@ -12,7 +11,7 @@ export const Container = styled(Animatable.View)`
     elevation: 2;
     border-radius: 8px;
     padding: 8px;
-    margin: 8px 8px 4px 8px;
+    margin: 15px 15px 7.5px 15px;
 `;
 
 export const Title = styled.Text`
